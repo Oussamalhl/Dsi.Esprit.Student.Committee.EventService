@@ -1,4 +1,4 @@
-package esprit.tn.eventservice.Config;
+package dsi.esprit.tn.Config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

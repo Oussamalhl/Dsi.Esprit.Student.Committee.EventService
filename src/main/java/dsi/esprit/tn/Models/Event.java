@@ -1,5 +1,6 @@
 package dsi.esprit.tn.Models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,39 +28,41 @@ public class Event implements Serializable {
     private Long id;
 
     @NotBlank
-    @Size(max = 20)
+    @Size(max = 50)
     private String name;
     @NotBlank
     @Size(max = 500)
     private String description;
-    @NotBlank
     @Temporal(TemporalType.DATE)
     private Date eventDateStart;
-    @NotBlank
     @Temporal(TemporalType.DATE)
     private Date eventDateEnd;
-    @NotBlank
-    @Size(max = 20)
+    @Size(max = 50)
     private String eventTime;
     @NotBlank
-    @Size(max = 20)
+    @Size(max = 50)
     private String eventLocation;
     @NotBlank
-    @Size(max = 20)
+    @Size(max = 50)
     private String eventMotive;
     @NotBlank
     @Size(max = 20)
     private String type;
 
-    private Boolean status;
+    @NotBlank
+    @Size(max = 20)
+    private String status;
     private int   places;
+
     @ElementCollection
     List<String> tags = new ArrayList<>();
+
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
     Set<eventFile> files;
 
-    @ManyToMany(mappedBy = "events")
-    private Set<Club> clubs;
+//    @ManyToMany(mappedBy = "events")
+//    private Set<Club> clubs;
 
 //    @OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
 //    private List<Reclamation> reclamations;

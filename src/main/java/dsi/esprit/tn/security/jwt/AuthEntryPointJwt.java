@@ -1,4 +1,4 @@
-package esprit.tn.eventservice.security.jwt;
+package dsi.esprit.tn.security.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;

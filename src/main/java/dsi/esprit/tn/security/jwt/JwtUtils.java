@@ -1,4 +1,4 @@
-package esprit.tn.eventservice.security.jwt;
+package dsi.esprit.tn.security.jwt;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;

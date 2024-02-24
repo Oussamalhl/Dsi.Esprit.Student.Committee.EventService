@@ -1,5 +1,6 @@
 package dsi.esprit.tn.Models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -22,6 +23,10 @@ public class eventFile {
     @Temporal(TemporalType.TIMESTAMP)
     Date uploadDate;
 
-    @ManyToOne
+    @Lob @Basic(fetch = FetchType.LAZY)
+    @Column(name = "picByte", length = 65535)
+    private byte[] picByte;
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
     Event event;
 }

@@ -1,9 +1,9 @@
-package esprit.tn.eventservice.security;
+package dsi.esprit.tn.security;
 
 import dsi.esprit.tn.security.jwt.AuthEntryPointJwt;
 import dsi.esprit.tn.security.jwt.AuthTokenFilter;
-import esprit.tn.eventservice.security.jwt.AuthEntryPointJwt;
-import esprit.tn.eventservice.security.jwt.AuthTokenFilter;
+import dsi.esprit.tn.security.jwt.AuthEntryPointJwt;
+import dsi.esprit.tn.security.jwt.AuthTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
