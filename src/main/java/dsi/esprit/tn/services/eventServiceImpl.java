@@ -79,7 +79,7 @@ public class eventServiceImpl implements IeventServiceImpl {
 
     }
     @Override
-    public List<Long> getClubs(Long idEvent) {
+    public List<String> getClubs(Long idEvent) {
         return eventRepository.getEventClubs(idEvent);
 
     }

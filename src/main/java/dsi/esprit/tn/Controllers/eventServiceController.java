@@ -155,6 +155,19 @@ public class eventServiceController {
                 .badRequest()
                 .body("Error: Bad request Or Already Participated");
     }
+    @PostMapping("/addUserEventa")
+    public ResponseEntity<?> addUserEventAdmin(@RequestParam Long idEvent,@RequestParam String username) {
+
+            Long idUser=eventservice.getUser(eventservice.showEventUser(username), idEvent);
+            if (idUser==null) {
+                eventservice.userEventParticipate(eventservice.showEventUser(username), idEvent);
+                return ResponseEntity.ok("user participated!");
+            }
+
+        return ResponseEntity
+                .badRequest()
+                .body("Error: Bad request Or Already Participated");
+    }
 
     @PostMapping(path = "/addFile/{id}")
     public eventFile addFile(@PathVariable("id") long id, @RequestParam("file") MultipartFile file) throws IOException {
@@ -186,5 +199,9 @@ public class eventServiceController {
     @GetMapping("/getParticipatables")
     public List<Object[]> getEventParticipatables(@RequestParam Long idEvent) {
         return eventservice.getParticipatableEventUsers(idEvent);
+    }
+    @GetMapping("/getEventClubs")
+    public List<String> getEventClubs(@RequestParam Long idEvent) {
+        return eventservice.getClubs(idEvent);
     }
 }
