@@ -109,4 +109,9 @@ public class eventServiceImpl implements IeventServiceImpl {
         eventRepository.deleteEventUsers(idEvent);
 
     }
+    @Override
+    public String getUsernameDetails(String username) {
+        return eventRepository.findUsernameDetails(username);
+
+    }
 }

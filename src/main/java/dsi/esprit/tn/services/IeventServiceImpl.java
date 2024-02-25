@@ -22,5 +22,6 @@ public interface IeventServiceImpl {
     List<Long> getUsers(Long idEvent);
     List<Object[]> getEventParticipations(Long idEvent);
     List<Object[]> getParticipatableEventUsers(Long idEvent);
+    String getUsernameDetails(String username);
 
 }

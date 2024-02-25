@@ -4,6 +4,7 @@ package dsi.esprit.tn.Controllers;
 import dsi.esprit.tn.Models.Event;
 import dsi.esprit.tn.Models.eventFile;
 import dsi.esprit.tn.security.jwt.JwtUtils;
+import dsi.esprit.tn.services.IEmailingServiceImpl;
 import dsi.esprit.tn.services.IeventFileServiceImpl;
 import dsi.esprit.tn.services.IeventServiceImpl;
 import org.slf4j.Logger;
@@ -17,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials = "true")
@@ -28,6 +30,8 @@ public class eventServiceController {
 
     @Autowired
     IeventFileServiceImpl IEFS;
+    @Autowired
+    IEmailingServiceImpl IemailS;
     @Autowired
     private IeventServiceImpl eventservice;
 
@@ -203,5 +207,19 @@ public class eventServiceController {
     @GetMapping("/getEventClubs")
     public List<String> getEventClubs(@RequestParam Long idEvent) {
         return eventservice.getClubs(idEvent);
+    }
+
+    @GetMapping("/generateParticipantBadge/{id}/{user}")
+    public void generateParticipantBadge(@PathVariable("id") Long idEvent,@PathVariable("user") String username) throws Exception {
+
+        List<String> user = Arrays.asList(eventservice.getUsernameDetails(username).split(",", -1));
+        logger.info("MailBadge user details: {}", user);
+        //logger.info("user de array: {}", Arrays.asList(user.get(0).split(",", -1)));
+        logger.info("MailBadge user details: {}", user.get(1));
+
+        Event e = eventservice.showEvent(idEvent);
+        IemailS.ParticipationConfirmation(user, e, IemailS.GenerateBadge(user, e));
+        //IemailS.DeleteBadgeFiles(user, e);
+
     }
 }

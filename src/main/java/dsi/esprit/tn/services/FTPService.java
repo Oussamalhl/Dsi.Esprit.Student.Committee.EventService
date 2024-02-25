@@ -10,7 +10,7 @@ import java.nio.file.Paths;
 
 public class FTPService {
     static FTPClient ftp = new FTPClient();
-    static String TMP_UPLOAD_FOLDER = "E:\\Esprit DSI\\dsi.esprit.reclamationService\\recamationservice\\tmp\\";
+    static String TMP_UPLOAD_FOLDER = "E:\\Esprit DSI\\dsi.esprit.eventService\\eventservice\\tmp\\";
 
 
 

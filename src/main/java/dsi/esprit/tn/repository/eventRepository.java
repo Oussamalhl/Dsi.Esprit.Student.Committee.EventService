@@ -33,6 +33,8 @@ public interface eventRepository extends JpaRepository<Event, Long> {
 
     @Query(value = "SELECT id FROM users WHERE username=?1", nativeQuery = true)
     Long findUsernameId(String username);
+    @Query(value = "SELECT username,email,firstname,lastname FROM users WHERE username=?1", nativeQuery = true)
+    String findUsernameDetails(String username);
 
     @Query(value = "SELECT user_id FROM user_events WHERE user_id=?1 AND event_id=?2", nativeQuery = true)
     Long findUserId(Long user_id, Long event_id);
