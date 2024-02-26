@@ -76,10 +76,14 @@ public class eventServiceController {
         return eventservice.getUser(idUser, idEvent);
     }
 
-//    @GetMapping("/getTargets")
+    //    @GetMapping("/getTargets")
 //    public List<String> getTargets(@RequestParam String type) {
 //        return eventservice.getTargets(type);
 //    }
+    @GetMapping("/getClubs")
+    public List<String> getClubs() {
+        return eventservice.getClubs();
+    }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/showallEvents")
@@ -96,12 +100,15 @@ public class eventServiceController {
     @DeleteMapping("/deleteEvent")
     public ResponseEntity<?> deleteEvent(@Valid @RequestParam Long idEvent) {
         logger.info("user_events: {}", eventservice.getUsers(idEvent));
-        //if(!eventservice.getUsers(idEvent).isEmpty())
-        eventservice.deleteEventUsers(idEvent);
-        //if(!eventservice.getClubs(idEvent).isEmpty())
+        eventservice.deleteUserEvents(idEvent);
         eventservice.deleteEventClubs(idEvent);
         eventservice.deleteEvent(idEvent);
         return ResponseEntity.ok("Event Id:" + idEvent + " is successfully deleted");
+    }
+    @DeleteMapping("/deleteUserEvent")
+    public ResponseEntity<?> deleteUserEvent(@RequestParam String username) {
+        eventservice.deleteUserEvent(eventservice.getUsernameId(username));
+        return ResponseEntity.ok( username +" is no longer participated");
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -135,7 +142,7 @@ public class eventServiceController {
     public ResponseEntity<?> addClubEvent(@RequestParam Long idEvent, @RequestBody List<String> clubs) {
 
         clubs.forEach(e ->
-                eventservice.eventClubParticipate(eventservice.getClub(e),idEvent)
+                eventservice.eventClubParticipate(eventservice.getClub(e), idEvent)
         );
         return ResponseEntity.ok("Club(s) participated!");
     }
@@ -147,9 +154,9 @@ public class eventServiceController {
         if (jwt != null) {
             logger.info("Eventjwt: {}", jwt);
             String username = jwtUtils.getUserNameFromJwtToken(jwt);
-            Long idUser=eventservice.getUser(eventservice.showEventUser(username), idEvent);
+            Long idUser = eventservice.getUser(eventservice.showEventUser(username), idEvent);
             logger.info("EventUdetails: {}", username);
-            if (idUser==null) {
+            if (idUser == null) {
                 logger.info("usereventsCheck: {}", idUser);
                 eventservice.userEventParticipate(eventservice.showEventUser(username), idEvent);
                 return ResponseEntity.ok("user participated!");
@@ -159,14 +166,15 @@ public class eventServiceController {
                 .badRequest()
                 .body("Error: Bad request Or Already Participated");
     }
-    @PostMapping("/addUserEventa")
-    public ResponseEntity<?> addUserEventAdmin(@RequestParam Long idEvent,@RequestParam String username) {
 
-            Long idUser=eventservice.getUser(eventservice.showEventUser(username), idEvent);
-            if (idUser==null) {
-                eventservice.userEventParticipate(eventservice.showEventUser(username), idEvent);
-                return ResponseEntity.ok("user participated!");
-            }
+    @PostMapping("/addUserEventa")
+    public ResponseEntity<?> addUserEventAdmin(@RequestParam Long idEvent, @RequestParam String username) {
+
+        Long idUser = eventservice.getUser(eventservice.showEventUser(username), idEvent);
+        if (idUser == null) {
+            eventservice.userEventParticipate(eventservice.showEventUser(username), idEvent);
+            return ResponseEntity.ok("user participated!");
+        }
 
         return ResponseEntity
                 .badRequest()
@@ -192,25 +200,29 @@ public class eventServiceController {
     public List<eventFile> EventAllFiles() {
         return IEFS.findAll();
     }
+
     @GetMapping("/getTags")
     public List<String> getEventTags() {
         return eventservice.getTags();
     }
+
     @GetMapping("/getParticipations")
     public List<Object[]> getEventParticipations(@RequestParam Long idEvent) {
         return eventservice.getEventParticipations(idEvent);
     }
+
     @GetMapping("/getParticipatables")
     public List<Object[]> getEventParticipatables(@RequestParam Long idEvent) {
         return eventservice.getParticipatableEventUsers(idEvent);
     }
+
     @GetMapping("/getEventClubs")
     public List<String> getEventClubs(@RequestParam Long idEvent) {
         return eventservice.getClubs(idEvent);
     }
 
     @GetMapping("/generateParticipantBadge/{id}/{user}")
-    public void generateParticipantBadge(@PathVariable("id") Long idEvent,@PathVariable("user") String username) throws Exception {
+    public void generateParticipantBadge(@PathVariable("id") Long idEvent, @PathVariable("user") String username) throws Exception {
 
         List<String> user = Arrays.asList(eventservice.getUsernameDetails(username).split(",", -1));
         logger.info("MailBadge user details: {}", user);
@@ -219,7 +231,7 @@ public class eventServiceController {
 
         Event e = eventservice.showEvent(idEvent);
         IemailS.ParticipationConfirmation(user, e, IemailS.GenerateBadge(user, e));
-        //IemailS.DeleteBadgeFiles(user, e);
+        IemailS.DeleteBadgeFiles(user, e);
 
     }
 }

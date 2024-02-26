@@ -105,13 +105,25 @@ public class eventServiceImpl implements IeventServiceImpl {
 
     }
     @Override
-    public void deleteEventUsers(Long idEvent) {
-        eventRepository.deleteEventUsers(idEvent);
+    public void deleteUserEvents(Long idEvent) {
+        eventRepository.deleteUserEvents(idEvent);
 
     }
     @Override
     public String getUsernameDetails(String username) {
         return eventRepository.findUsernameDetails(username);
 
+    }
+    @Override
+    public List<String> getClubs(){
+        return eventRepository.getClubs();
+    }
+    @Override
+    public Long getUsernameId(String username){
+        return eventRepository.findUsernameId(username);
+    }
+    @Override
+    public void deleteUserEvent(Long userId){
+         eventRepository.deleteEventUser(userId);
     }
 }

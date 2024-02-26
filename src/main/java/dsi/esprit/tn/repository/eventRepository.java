@@ -30,6 +30,8 @@ public interface eventRepository extends JpaRepository<Event, Long> {
     void eventClubParticipate(@Param("club_id") Long club_id,
                               @Param("event_id") Long event_id
     );
+    @Query(value = "SELECT name FROM clubs", nativeQuery = true)
+    List<String> getClubs();
 
     @Query(value = "SELECT id FROM users WHERE username=?1", nativeQuery = true)
     Long findUsernameId(String username);
@@ -55,8 +57,11 @@ public interface eventRepository extends JpaRepository<Event, Long> {
     @Modifying
     @Transactional
     @Query(value = "DELETE FROM user_events WHERE event_id=?1", nativeQuery = true)
-    void deleteEventUsers(Long event_id);
-
+    void deleteUserEvents(Long event_id);
+    @Modifying
+    @Transactional
+    @Query(value = "DELETE FROM user_events WHERE user_id=?1", nativeQuery = true)
+    void deleteEventUser(Long user_id);
     @Query(value = "SELECT user_id FROM user_events WHERE event_id=?1", nativeQuery = true)
     List<Long> getEventUsers(Long event_id);
 

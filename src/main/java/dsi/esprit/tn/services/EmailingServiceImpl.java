@@ -44,12 +44,13 @@ public class EmailingServiceImpl implements IEmailingServiceImpl {
 
     @Autowired
     IQRCodeGeneratorImpl IQRS;
+    static String TMP_UPLOAD_FOLDER ="E:\\Esprit DSI\\dsi.esprit.eventService\\eventservice\\tmp\\";
 
 
-    public void ParticipationConfirmation(List<String> user, Event e, Document document) throws Exception {
+    public void ParticipationConfirmation(List<String> user, Event e, String pathPDF) throws Exception {
 
         // Mail with Badge attachement
-
+        File f = new File(pathPDF);
         DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
         MimeMessage mm = emailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mm, true);
@@ -65,18 +66,16 @@ public class EmailingServiceImpl implements IEmailingServiceImpl {
                 + "Thank you for your participation. We look forward to hearing your feedback on the event after attending.\n\n"
                 + "Regards,\n" + "The DSI ESPRIT Team");
         mimeMessageHelper.setSubject("Participation confirmation");
-        //FileSystemResource fileSystemResource = new FileSystemResource(new File(pathPDF));
-        //mimeMessageHelper.addAttachment("Badge", document);
+        mimeMessageHelper.addAttachment("Badge", f);
 
         emailSender.send(mm);
 
     }
 
     // pdf generation for Participant badge
-    public Document GenerateBadge(List<String> user, Event e) throws WriterException, IOException, Exception {
+    public String GenerateBadge(List<String> user, Event e) throws WriterException, IOException, Exception {
 
-        String pathPDF = user.get(1) + user.get(2) + ".pdf";
-        String QRpath = user.get(1) + user.get(2) + "QR";
+        String pathPDF =TMP_UPLOAD_FOLDER+"event\\"+ user.get(1) + user.get(2) + ".pdf";
         String script1 = "   Participant: ".concat(user.get(0)) + "\n\n";
         String script2 = "   Event: " + e.getName();
         String script3 = "PARTICIPANT";
@@ -111,10 +110,8 @@ public class EmailingServiceImpl implements IEmailingServiceImpl {
         canvas.stroke();
 
 
-        Path path = Paths.get("E:\\Esprit DSI\\dsi.esprit.eventService\\eventservice\\tmp\\logo-esprit.png");
+        Path path = Paths.get(TMP_UPLOAD_FOLDER+"logo-esprit.png");
 
-//        FileSystemResource res = new FileSystemResource(
-//                new File(ClassLoader.getSystemResource("tmp/event/logo-esprit.png").toURI()));
         ImageData data = ImageDataFactory.create(Files.readAllBytes(path));
 
 
@@ -137,16 +134,14 @@ public class EmailingServiceImpl implements IEmailingServiceImpl {
         document.showTextAligned(p, 40, 40, null);
 
         document.close();
-        //InputStream in = new FileInputStream("my.pdf");
 
-        return (document);
+        return (pathPDF);
 
     }
 
 
     public void DeleteBadgeFiles(List<String> user, Event e) {
-        String pathPDF = user.get(1) + user.get(2) + ".pdf";
-        String QRpath = user.get(1) + user.get(2) + "QR";
+        String pathPDF =TMP_UPLOAD_FOLDER+"event\\"+ user.get(1) + user.get(2) + ".pdf";
         File f = new File(pathPDF);
         try {
             if (f.delete())
@@ -161,33 +156,18 @@ public class EmailingServiceImpl implements IEmailingServiceImpl {
             exe.printStackTrace();
         }
 
-        File f2 = new File(QRpath);
-        try {
-            if (f2.delete()) // returns Boolean value
-            {
-                System.out.println(f2.getName() + " deleted");
-            } else {
-                System.out.println("failed");
-            }
-        } catch (
-
-                Exception exe) {
-            exe.printStackTrace();
-        }
-
     }
 
 
     public void CancelParticipation(List<String> user,Event e) throws Exception {
-
+        File f = new File(TMP_UPLOAD_FOLDER+"logo-esprit.png");
         DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-
         MimeMessage mm = emailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mm, true);
         mimeMessageHelper.setFrom(user.get(1));
         mimeMessageHelper.setTo(user.get(1));
         mimeMessageHelper.setText("Hello " + user.get(2) + " " + user.get(3) + "," + "\n \n"
-                + "You are no longer a participent in the following event: \n" + "Event: "
+                + "You are no longer a participant in the following event: \n" + "Event: "
                 + e.getName() + "- " + e.getDescription() + "\nLocation: "
                 + e.getEventLocation() + "\nDate: \n" + "	Starts At :"
                 + dateFormat.format(e.getEventDateStart()) + "\n" + "	Ends At: "
@@ -197,14 +177,7 @@ public class EmailingServiceImpl implements IEmailingServiceImpl {
                 + "If you think there has been an error, please contact us via our complaints section.\n\n"
                 + "Regards,\n" + "The DSI ESPRIT Team");
         mimeMessageHelper.setSubject("Participation cancelled");
-
-        Path path = Paths.get("E:\\Esprit DSI\\dsi.esprit.eventService\\eventservice\\tmp\\logo-esprit.png");
-        ImageData data = ImageDataFactory.create(Files.readAllBytes(path));
-        Image image = new Image(data);
-//
-//        FileSystemResource res = new FileSystemResource(
-//                new File(ClassLoader.getSystemResource("E:\\Esprit DSI\\dsi.esprit.eventService\\eventservice\\tmp\\logo-esprit.png").toURI()));
-        //mimeMessageHelper.addInline("DSI Esprit Student Committee", (DataSource) image);
+        mimeMessageHelper.addInline("DSI Esprit Student Committee", f);
 
         // ! add complaints section url!!!
 
@@ -215,11 +188,6 @@ public class EmailingServiceImpl implements IEmailingServiceImpl {
 
     public void eventUpdate(List<String> user, Event e,String pathPDF) throws Exception {
 
-        String type;
-        if (e.getType().toString()=="INPERSON")
-            type="Location";
-        else
-            type="Virtual meeting link";
         DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
         MimeMessage mm = emailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mm, true);
@@ -227,7 +195,7 @@ public class EmailingServiceImpl implements IEmailingServiceImpl {
         mimeMessageHelper.setTo(user.get(1));
         mimeMessageHelper.setText("Hello " + user.get(2) + " " + user.get(3) + "," + "\n \n"
                 + "Updates/changes have been added to an event you are participating in. Please note the new changes: \n" + "Event: " + e.getName()
-                + "- " + e.getDescription() + "\n"+type+": " + e.getEventLocation() + "\nDate: \n" + "	Starts At :"
+                + "- " + e.getDescription() + "\n"+"Location"+": " + e.getEventLocation() + "\nDate: \n" + "	Starts At :"
                 + dateFormat.format(e.getEventDateStart()) + "\n" + "	Ends At: "
                 + dateFormat.format(e.getEventDateEnd()) + "\n" + "Time: " + e.getEventTime() + "\nEvent Link: "
                 + "https://www.dsi.esprit.tn/Events/" + e.getName() + ".\n"

@@ -17,11 +17,14 @@ public interface IeventServiceImpl {
     void eventClubParticipate(Long club_id,Long event_id);
     List<String> getTags();
     void deleteEventClubs(Long idEvent);
-    void deleteEventUsers(Long idEvent);
+    void deleteUserEvents(Long idEvent);
     List<String> getClubs(Long idEvent);
     List<Long> getUsers(Long idEvent);
     List<Object[]> getEventParticipations(Long idEvent);
     List<Object[]> getParticipatableEventUsers(Long idEvent);
     String getUsernameDetails(String username);
+    List<String> getClubs();
+    Long getUsernameId(String username);
+    void deleteUserEvent(Long userId);
 
 }
