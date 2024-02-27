@@ -26,5 +26,11 @@ public interface IeventServiceImpl {
     List<String> getClubs();
     Long getUsernameId(String username);
     void deleteUserEvent(Long userId);
+    void confirmUserEvent(Long eventId, Long userId);
+
+    List<Object[]> countEventsTypeByYear();
+    List<Object[]> countEventsStatusByYear();
+    List<Integer[]> countAllEventsByMonth();
+    Integer countEventsByMonth(int month,int year);
 
 }

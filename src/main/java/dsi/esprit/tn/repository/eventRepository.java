@@ -62,6 +62,10 @@ public interface eventRepository extends JpaRepository<Event, Long> {
     @Transactional
     @Query(value = "DELETE FROM user_events WHERE user_id=?1", nativeQuery = true)
     void deleteEventUser(Long user_id);
+    @Modifying
+    @Transactional
+    @Query(value = "update user_events set isConfirmed=true where event_id=?1 and user_id=?2", nativeQuery = true)
+    void ConfirmUserEvent(Long event_id, Long user_id);
     @Query(value = "SELECT user_id FROM user_events WHERE event_id=?1", nativeQuery = true)
     List<Long> getEventUsers(Long event_id);
 
@@ -77,4 +81,19 @@ public interface eventRepository extends JpaRepository<Event, Long> {
             "(select user_id from user_events where user_events.event_id=?1) ",
             nativeQuery = true)
     List<Object[]> getParticipatableEventUsers(Long event_id);
+
+
+
+
+//    @Query(value = "SELECT * FROM events WHERE date BETWEEN :startDate and :endDate", nativeQuery = true)
+//    List<Event> selectReclamationsByDate(@Param("startDate") Date startDate,@Param("endDate") Date endDate);
+    @Query(value = "SELECT COUNT(*) FROM events WHERE MONTH(eventDateEnd)=? AND YEAR(eventDateEnd)=?", nativeQuery = true)
+    Integer countEventsByMonth(@Param("month") int month,@Param("year") int year);
+    @Query(value = "SELECT YEAR(eventDateEnd),MONTH(eventDateEnd),COUNT(*) FROM events GROUP BY YEAR(eventDateEnd),MONTH(eventDateEnd)", nativeQuery = true)
+    List<Integer[]> countAllEventsByMonth();
+
+    @Query(value = "SELECT YEAR(eventDateEnd),status,COUNT(*) FROM events GROUP BY YEAR(eventDateEnd),status", nativeQuery = true)
+    List<Object[]> countEventStatusByYear();
+    @Query(value = "SELECT YEAR(eventDateEnd),type,COUNT(*) FROM events GROUP BY YEAR(eventDateEnd),type", nativeQuery = true)
+    List<Object[]> countEventTypeByYear();
 }

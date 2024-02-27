@@ -126,4 +126,29 @@ public class eventServiceImpl implements IeventServiceImpl {
     public void deleteUserEvent(Long userId){
          eventRepository.deleteEventUser(userId);
     }
+    @Override
+    public void confirmUserEvent(Long eventId, Long userId){
+        eventRepository.ConfirmUserEvent(eventId,userId);
+    }
+
+    @Override
+    public Integer countEventsByMonth(int month,int year) {
+        return eventRepository.countEventsByMonth(month,year);
+
+    }
+    @Override
+    public List<Integer[]> countAllEventsByMonth() {
+        return eventRepository.countAllEventsByMonth();
+
+    }
+    @Override
+    public List<Object[]> countEventsStatusByYear() {
+        return eventRepository.countEventStatusByYear();
+
+    }
+    @Override
+    public List<Object[]> countEventsTypeByYear() {
+        return eventRepository.countEventTypeByYear();
+
+    }
 }

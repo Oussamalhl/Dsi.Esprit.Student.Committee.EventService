@@ -110,6 +110,14 @@ public class eventServiceController {
         eventservice.deleteUserEvent(eventservice.getUsernameId(username));
         return ResponseEntity.ok( username +" is no longer participated");
     }
+    @DeleteMapping("/deleteUserEventm")
+    public ResponseEntity<?> deleteUserEventMail(@RequestParam Long eventId,@RequestParam String username) throws Exception {
+        List<String> user = Arrays.asList(eventservice.getUsernameDetails(username).split(",", -1));
+
+        eventservice.deleteUserEvent(eventservice.getUsernameId(username));
+        IemailS.CancelParticipation(user,eventservice.showEvent(eventId));
+        return ResponseEntity.ok( username +"no longer participated and notified by Mail");
+    }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/updateEvent")
@@ -225,13 +233,32 @@ public class eventServiceController {
     public void generateParticipantBadge(@PathVariable("id") Long idEvent, @PathVariable("user") String username) throws Exception {
 
         List<String> user = Arrays.asList(eventservice.getUsernameDetails(username).split(",", -1));
-        logger.info("MailBadge user details: {}", user);
-        //logger.info("user de array: {}", Arrays.asList(user.get(0).split(",", -1)));
-        logger.info("MailBadge user details: {}", user.get(1));
 
+        eventservice.confirmUserEvent(idEvent,eventservice.getUsernameId(user.get(0)));
         Event e = eventservice.showEvent(idEvent);
         IemailS.ParticipationConfirmation(user, e, IemailS.GenerateBadge(user, e));
         IemailS.DeleteBadgeFiles(user, e);
 
+    }
+    @GetMapping("/countEvByMonth")
+    public Integer countEventsByDate(@RequestParam("month") Integer month, @RequestParam("year")Integer year) {
+        //SimpleDateFormat sdformat = new SimpleDateFormat("yyyy-MM-dd");
+        //sdformat.parse(startDate);
+        return eventservice.countEventsByMonth(month,year);
+    }
+    @GetMapping("/countAllEvByMonth")
+    public List<Integer[]> countAllEventsByDate() {
+        //SimpleDateFormat sdformat = new SimpleDateFormat("yyyy-MM-dd");
+        //sdformat.parse(startDate);
+        return eventservice.countAllEventsByMonth();
+    }
+
+    @GetMapping("/countEvStatusByYear")
+    public List<Object[]> countEventsStatusByYear() {
+        return eventservice.countEventsStatusByYear();
+    }
+    @GetMapping("/countEvTypeByYear")
+    public List<Object[]> countEventsTypeByYear() {
+        return eventservice.countEventsTypeByYear();
     }
 }

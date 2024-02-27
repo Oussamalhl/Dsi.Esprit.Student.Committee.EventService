@@ -4,20 +4,15 @@ import com.itextpdf.kernel.pdf.PdfReader;
 import dsi.esprit.tn.Models.Event;
 
 import java.io.*;
-import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
-import javax.activation.DataSource;
 import javax.mail.internet.MimeMessage;
 
-import org.apache.commons.net.util.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -160,7 +155,6 @@ public class EmailingServiceImpl implements IEmailingServiceImpl {
 
 
     public void CancelParticipation(List<String> user,Event e) throws Exception {
-        File f = new File(TMP_UPLOAD_FOLDER+"logo-esprit.png");
         DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
         MimeMessage mm = emailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mm, true);
@@ -174,12 +168,9 @@ public class EmailingServiceImpl implements IEmailingServiceImpl {
                 + dateFormat.format(e.getEventDateEnd()) + "\n" + "Time: "
                 + e.getEventTime() + "\nEvent Link: " + "https://www.dsi.esprit.tn/Events/"
                 + e.getName() + ".\n"
-                + "If you think there has been an error, please contact us via our complaints section.\n\n"
+                + "If you think there has been an error, please contact us via our reclamations section.\n\n"
                 + "Regards,\n" + "The DSI ESPRIT Team");
         mimeMessageHelper.setSubject("Participation cancelled");
-        mimeMessageHelper.addInline("DSI Esprit Student Committee", f);
-
-        // ! add complaints section url!!!
 
         emailSender.send(mm);
 
@@ -207,15 +198,15 @@ public class EmailingServiceImpl implements IEmailingServiceImpl {
 
     }
     public void Personalized(List<String> user,String subject, String body) throws Exception {
+        File f = new File(TMP_UPLOAD_FOLDER+"logo-esprit.png");
         MimeMessage mm = emailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mm, true);
         mimeMessageHelper.setFrom(user.get(1));
         mimeMessageHelper.setTo(user.get(1));
         mimeMessageHelper.setText(body);
         mimeMessageHelper.setSubject(subject);
-        FileSystemResource res = new FileSystemResource(
-                new File(ClassLoader.getSystemResource("static/images/.png").toURI()));
-        mimeMessageHelper.addInline("The DSI ESPRIT Team", res);
+
+        mimeMessageHelper.addInline("The DSI ESPRIT Team", f);
 
         emailSender.send(mm);
 
