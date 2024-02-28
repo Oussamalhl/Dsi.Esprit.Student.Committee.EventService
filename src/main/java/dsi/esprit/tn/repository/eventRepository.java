@@ -30,11 +30,13 @@ public interface eventRepository extends JpaRepository<Event, Long> {
     void eventClubParticipate(@Param("club_id") Long club_id,
                               @Param("event_id") Long event_id
     );
+
     @Query(value = "SELECT name FROM clubs", nativeQuery = true)
     List<String> getClubs();
 
     @Query(value = "SELECT id FROM users WHERE username=?1", nativeQuery = true)
     Long findUsernameId(String username);
+
     @Query(value = "SELECT username,email,firstname,lastname FROM users WHERE username=?1", nativeQuery = true)
     String findUsernameDetails(String username);
 
@@ -49,6 +51,11 @@ public interface eventRepository extends JpaRepository<Event, Long> {
             "where event_id=?1", nativeQuery = true)
     List<String> getEventClubs(Long event_id);
 
+    @Query(value = "select id from clubs " +
+            "inner join club_events on clubs.id=club_events.club_id " +
+            "where event_id=?1", nativeQuery = true)
+    List<Long> getEventClubsId(Long event_id);
+
     @Modifying
     @Transactional
     @Query(value = "DELETE FROM club_events WHERE event_id=?1", nativeQuery = true)
@@ -58,14 +65,17 @@ public interface eventRepository extends JpaRepository<Event, Long> {
     @Transactional
     @Query(value = "DELETE FROM user_events WHERE event_id=?1", nativeQuery = true)
     void deleteUserEvents(Long event_id);
+
     @Modifying
     @Transactional
     @Query(value = "DELETE FROM user_events WHERE user_id=?1", nativeQuery = true)
     void deleteEventUser(Long user_id);
+
     @Modifying
     @Transactional
     @Query(value = "update user_events set isConfirmed=true where event_id=?1 and user_id=?2", nativeQuery = true)
     void ConfirmUserEvent(Long event_id, Long user_id);
+
     @Query(value = "SELECT user_id FROM user_events WHERE event_id=?1", nativeQuery = true)
     List<Long> getEventUsers(Long event_id);
 
@@ -83,17 +93,37 @@ public interface eventRepository extends JpaRepository<Event, Long> {
     List<Object[]> getParticipatableEventUsers(Long event_id);
 
 
+    @Query(value = "select event_id from user_events group by event_id order by avg(Rating) desc", nativeQuery = true)
+    List<Integer[]> bestEventsOfAllTime();
 
+    @Query(value = "select event_id,avg(user_events.Rating),name from user_events " +
+            "inner join events on user_events.event_id = events.id where year(eventDateEnd)=?1 " +
+            "group by event_id " +
+            "order by avg(user_events.Rating) desc",
+            nativeQuery = true)
+    List<Object[]> bestEventsOfTheYear(int year);
+    @Query(value = "SELECT COUNT(*) FROM events", nativeQuery = true)
+    Integer countAllEvents();
+    @Query(value = "SELECT COUNT(*) FROM user_events", nativeQuery = true)
+    Integer countAllEventsParticipations();
+    @Query(value = "SELECT COUNT(*) FROM user_events where event_id=?1", nativeQuery = true)
+    Integer countEventParticipations(Long idEvent);
+    @Query(value = "SELECT COUNT(*) FROM user_events where isConfirmed=true ", nativeQuery = true)
+    Integer countAllConfirmedEvents();
+    @Query(value = "SELECT COUNT(*) FROM user_events where isConfirmed=true and event_id=?1", nativeQuery = true)
+    Integer countEventConfirmed(Long idEvent);
 
-//    @Query(value = "SELECT * FROM events WHERE date BETWEEN :startDate and :endDate", nativeQuery = true)
+    //    @Query(value = "SELECT * FROM events WHERE date BETWEEN :startDate and :endDate", nativeQuery = true)
 //    List<Event> selectReclamationsByDate(@Param("startDate") Date startDate,@Param("endDate") Date endDate);
     @Query(value = "SELECT COUNT(*) FROM events WHERE MONTH(eventDateEnd)=? AND YEAR(eventDateEnd)=?", nativeQuery = true)
-    Integer countEventsByMonth(@Param("month") int month,@Param("year") int year);
+    Integer countEventsByMonth(@Param("month") int month, @Param("year") int year);
+
     @Query(value = "SELECT YEAR(eventDateEnd),MONTH(eventDateEnd),COUNT(*) FROM events GROUP BY YEAR(eventDateEnd),MONTH(eventDateEnd)", nativeQuery = true)
     List<Integer[]> countAllEventsByMonth();
 
     @Query(value = "SELECT YEAR(eventDateEnd),status,COUNT(*) FROM events GROUP BY YEAR(eventDateEnd),status", nativeQuery = true)
     List<Object[]> countEventStatusByYear();
+
     @Query(value = "SELECT YEAR(eventDateEnd),type,COUNT(*) FROM events GROUP BY YEAR(eventDateEnd),type", nativeQuery = true)
     List<Object[]> countEventTypeByYear();
 }

@@ -32,5 +32,13 @@ public interface IeventServiceImpl {
     List<Object[]> countEventsStatusByYear();
     List<Integer[]> countAllEventsByMonth();
     Integer countEventsByMonth(int month,int year);
+    List<Object[]> bestEventsOfTheYear(int year);
+    Integer countAllEvents();
+    Integer countAllEventsParticipations();
+    Integer countAllConfirmedEvents();
+    Integer countEventParticipations(Long idEvent);
+    Integer countEventConfirmed(Long idEvent);
+
+
 
 }

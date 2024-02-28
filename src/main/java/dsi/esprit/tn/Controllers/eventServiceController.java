@@ -105,11 +105,13 @@ public class eventServiceController {
         eventservice.deleteEvent(idEvent);
         return ResponseEntity.ok("Event Id:" + idEvent + " is successfully deleted");
     }
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/deleteUserEvent")
     public ResponseEntity<?> deleteUserEvent(@RequestParam String username) {
         eventservice.deleteUserEvent(eventservice.getUsernameId(username));
         return ResponseEntity.ok( username +" is no longer participated");
     }
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/deleteUserEventm")
     public ResponseEntity<?> deleteUserEventMail(@RequestParam Long eventId,@RequestParam String username) throws Exception {
         List<String> user = Arrays.asList(eventservice.getUsernameDetails(username).split(",", -1));
@@ -127,7 +129,7 @@ public class eventServiceController {
         return ResponseEntity.ok("Eventid: " + event.getId() + " is successfully updated");
 
     }
-
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     @PostMapping("/addEvent")
     public ResponseEntity<?> addEvent(HttpServletRequest request, @RequestBody Event event) {
 
@@ -145,7 +147,7 @@ public class eventServiceController {
                 .badRequest()
                 .body("Error: Bad request");
     }
-
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/addClubEvent")
     public ResponseEntity<?> addClubEvent(@RequestParam Long idEvent, @RequestBody List<String> clubs) {
 
@@ -154,7 +156,7 @@ public class eventServiceController {
         );
         return ResponseEntity.ok("Club(s) participated!");
     }
-
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     @PostMapping("/addUserEvent")
     public ResponseEntity<?> addUserEvent(HttpServletRequest request, @RequestParam Long idEvent) {
 
@@ -174,7 +176,7 @@ public class eventServiceController {
                 .badRequest()
                 .body("Error: Bad request Or Already Participated");
     }
-
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/addUserEventa")
     public ResponseEntity<?> addUserEventAdmin(@RequestParam Long idEvent, @RequestParam String username) {
 
@@ -188,22 +190,22 @@ public class eventServiceController {
                 .badRequest()
                 .body("Error: Bad request Or Already Participated");
     }
-
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     @PostMapping(path = "/addFile/{id}")
     public eventFile addFile(@PathVariable("id") long id, @RequestParam("file") MultipartFile file) throws IOException {
         return IEFS.addFile(file, id);
     }
-
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     @DeleteMapping("/{id}/deleteFile/{File}")
     public void deleteFile(@PathVariable("File") Long File, @PathVariable("id") long id) throws IOException {
         IEFS.removeFile(File, id);
     }
-
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     @GetMapping("/getFiles/{id}")
     public List<eventFile> EventFiles(@PathVariable("id") Long id) {
         return IEFS.GeteventFiles(id);
     }
-
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/getAllFiles")
     public List<eventFile> EventAllFiles() {
         return IEFS.findAll();
@@ -213,12 +215,12 @@ public class eventServiceController {
     public List<String> getEventTags() {
         return eventservice.getTags();
     }
-
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/getParticipations")
     public List<Object[]> getEventParticipations(@RequestParam Long idEvent) {
         return eventservice.getEventParticipations(idEvent);
     }
-
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/getParticipatables")
     public List<Object[]> getEventParticipatables(@RequestParam Long idEvent) {
         return eventservice.getParticipatableEventUsers(idEvent);
@@ -228,7 +230,7 @@ public class eventServiceController {
     public List<String> getEventClubs(@RequestParam Long idEvent) {
         return eventservice.getClubs(idEvent);
     }
-
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/generateParticipantBadge/{id}/{user}")
     public void generateParticipantBadge(@PathVariable("id") Long idEvent, @PathVariable("user") String username) throws Exception {
 
@@ -240,25 +242,58 @@ public class eventServiceController {
         IemailS.DeleteBadgeFiles(user, e);
 
     }
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/countEvByMonth")
     public Integer countEventsByDate(@RequestParam("month") Integer month, @RequestParam("year")Integer year) {
         //SimpleDateFormat sdformat = new SimpleDateFormat("yyyy-MM-dd");
         //sdformat.parse(startDate);
         return eventservice.countEventsByMonth(month,year);
     }
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/countAllEvByMonth")
     public List<Integer[]> countAllEventsByDate() {
         //SimpleDateFormat sdformat = new SimpleDateFormat("yyyy-MM-dd");
         //sdformat.parse(startDate);
         return eventservice.countAllEventsByMonth();
     }
-
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/countEvStatusByYear")
     public List<Object[]> countEventsStatusByYear() {
         return eventservice.countEventsStatusByYear();
     }
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/countEvTypeByYear")
     public List<Object[]> countEventsTypeByYear() {
         return eventservice.countEventsTypeByYear();
+    }
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/bestEvOfYear")
+    public List<Object[]> bestEventsOfTheYear(@RequestParam int year) {
+        return eventservice.bestEventsOfTheYear(year);
+    }
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/countAllEv")
+    public Integer countAllEvents() {
+        return eventservice.countAllEvents();
+    }
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/countAllEvPartc")
+    public Integer countAllEventsParticipations() {
+        return eventservice.countAllEventsParticipations();
+    }
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/countAllConfEv")
+    public Integer countAllConfirmedEvents() {
+        return eventservice.countAllConfirmedEvents();
+    }
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/countEvParti")
+    public Integer countEventParticipations(@RequestParam Long idEvent) {
+        return eventservice.countEventParticipations(idEvent);
+    }
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/countEvConfirmed")
+    public Integer countEventConfirmed(@RequestParam Long idEvent) {
+        return eventservice.countEventConfirmed(idEvent);
     }
 }

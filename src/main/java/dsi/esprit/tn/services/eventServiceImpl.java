@@ -4,6 +4,7 @@ import dsi.esprit.tn.Models.Event;
 import dsi.esprit.tn.repository.eventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Date;
 import java.util.List;
@@ -151,4 +152,33 @@ public class eventServiceImpl implements IeventServiceImpl {
         return eventRepository.countEventTypeByYear();
 
     }
+    @Override
+    public List<Object[]> bestEventsOfTheYear(int year) {
+        return eventRepository.bestEventsOfTheYear(year);
+
+    }
+    @Override
+
+    public Integer countAllEvents() {
+        return eventRepository.countAllEvents();
+    }
+    @Override
+
+    public Integer countAllEventsParticipations() {
+        return eventRepository.countAllEventsParticipations();
+    }
+    @Override
+    public Integer countAllConfirmedEvents() {
+        return eventRepository.countAllConfirmedEvents();
+    }
+    @Override
+    public Integer countEventParticipations(Long idEvent) {
+        return eventRepository.countEventParticipations(idEvent);
+    }
+    @Override
+    public Integer countEventConfirmed(Long idEvent) {
+        return eventRepository.countEventConfirmed(idEvent);
+    }
+
+
 }
