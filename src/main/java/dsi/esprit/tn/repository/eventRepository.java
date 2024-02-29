@@ -101,7 +101,7 @@ public interface eventRepository extends JpaRepository<Event, Long> {
             "group by event_id " +
             "order by avg(user_events.Rating) desc",
             nativeQuery = true)
-    List<Object[]> bestEventsOfTheYear(int year);
+    List<Object[]> bestEventsOfTheYear(Integer year);
     @Query(value = "SELECT COUNT(*) FROM events", nativeQuery = true)
     Integer countAllEvents();
     @Query(value = "SELECT COUNT(*) FROM user_events", nativeQuery = true)
@@ -118,12 +118,12 @@ public interface eventRepository extends JpaRepository<Event, Long> {
     @Query(value = "SELECT COUNT(*) FROM events WHERE MONTH(eventDateEnd)=? AND YEAR(eventDateEnd)=?", nativeQuery = true)
     Integer countEventsByMonth(@Param("month") int month, @Param("year") int year);
 
-    @Query(value = "SELECT YEAR(eventDateEnd),MONTH(eventDateEnd),COUNT(*) FROM events GROUP BY YEAR(eventDateEnd),MONTH(eventDateEnd)", nativeQuery = true)
-    List<Integer[]> countAllEventsByMonth();
+    @Query(value = "SELECT MONTH(eventDateEnd),COUNT(*) FROM events WHERE YEAR(eventDateEnd)=?1 GROUP BY MONTH(eventDateEnd)", nativeQuery = true)
+    List<Integer[]> countAllEventsByMonth(Integer year);
 
-    @Query(value = "SELECT YEAR(eventDateEnd),status,COUNT(*) FROM events GROUP BY YEAR(eventDateEnd),status", nativeQuery = true)
-    List<Object[]> countEventStatusByYear();
+    @Query(value = "SELECT status,COUNT(*) FROM events WHERE YEAR(eventDateEnd)=?1 GROUP BY status", nativeQuery = true)
+    List<Object[]> countEventStatusByYear(Integer year);
 
-    @Query(value = "SELECT YEAR(eventDateEnd),type,COUNT(*) FROM events GROUP BY YEAR(eventDateEnd),type", nativeQuery = true)
-    List<Object[]> countEventTypeByYear();
+    @Query(value = "SELECT type,COUNT(*) FROM events WHERE YEAR(eventDateEnd)=?1 GROUP BY type", nativeQuery = true)
+    List<Object[]> countEventTypeByYear(Integer year);
 }

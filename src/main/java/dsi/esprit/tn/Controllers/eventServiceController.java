@@ -251,24 +251,24 @@ public class eventServiceController {
     }
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/countAllEvByMonth")
-    public List<Integer[]> countAllEventsByDate() {
+    public List<Integer[]> countAllEventsByDate(@RequestParam Integer year) {
         //SimpleDateFormat sdformat = new SimpleDateFormat("yyyy-MM-dd");
         //sdformat.parse(startDate);
-        return eventservice.countAllEventsByMonth();
+        return eventservice.countAllEventsByMonth(year);
     }
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/countEvStatusByYear")
-    public List<Object[]> countEventsStatusByYear() {
-        return eventservice.countEventsStatusByYear();
+    public List<Object[]> countEventsStatusByYear(@RequestParam Integer year) {
+        return eventservice.countEventsStatusByYear(year);
     }
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/countEvTypeByYear")
-    public List<Object[]> countEventsTypeByYear() {
-        return eventservice.countEventsTypeByYear();
+    public List<Object[]> countEventsTypeByYear(@RequestParam Integer year) {
+        return eventservice.countEventsTypeByYear(year);
     }
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/bestEvOfYear")
-    public List<Object[]> bestEventsOfTheYear(@RequestParam int year) {
+    public List<Object[]> bestEventsOfTheYear(@RequestParam Integer year) {
         return eventservice.bestEventsOfTheYear(year);
     }
     @PreAuthorize("hasRole('ROLE_ADMIN')")

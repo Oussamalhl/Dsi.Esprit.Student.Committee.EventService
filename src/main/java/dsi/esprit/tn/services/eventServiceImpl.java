@@ -138,22 +138,22 @@ public class eventServiceImpl implements IeventServiceImpl {
 
     }
     @Override
-    public List<Integer[]> countAllEventsByMonth() {
-        return eventRepository.countAllEventsByMonth();
+    public List<Integer[]> countAllEventsByMonth(Integer year) {
+        return eventRepository.countAllEventsByMonth(year);
 
     }
     @Override
-    public List<Object[]> countEventsStatusByYear() {
-        return eventRepository.countEventStatusByYear();
+    public List<Object[]> countEventsStatusByYear(Integer year) {
+        return eventRepository.countEventStatusByYear(year);
 
     }
     @Override
-    public List<Object[]> countEventsTypeByYear() {
-        return eventRepository.countEventTypeByYear();
+    public List<Object[]> countEventsTypeByYear(Integer year) {
+        return eventRepository.countEventTypeByYear(year);
 
     }
     @Override
-    public List<Object[]> bestEventsOfTheYear(int year) {
+    public List<Object[]> bestEventsOfTheYear(Integer year) {
         return eventRepository.bestEventsOfTheYear(year);
 
     }

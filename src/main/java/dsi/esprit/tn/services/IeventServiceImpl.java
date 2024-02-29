@@ -28,11 +28,11 @@ public interface IeventServiceImpl {
     void deleteUserEvent(Long userId);
     void confirmUserEvent(Long eventId, Long userId);
 
-    List<Object[]> countEventsTypeByYear();
-    List<Object[]> countEventsStatusByYear();
-    List<Integer[]> countAllEventsByMonth();
+    List<Object[]> countEventsTypeByYear(Integer year);
+    List<Object[]> countEventsStatusByYear(Integer year);
+    List<Integer[]> countAllEventsByMonth(Integer year);
     Integer countEventsByMonth(int month,int year);
-    List<Object[]> bestEventsOfTheYear(int year);
+    List<Object[]> bestEventsOfTheYear(Integer year);
     Integer countAllEvents();
     Integer countAllEventsParticipations();
     Integer countAllConfirmedEvents();
