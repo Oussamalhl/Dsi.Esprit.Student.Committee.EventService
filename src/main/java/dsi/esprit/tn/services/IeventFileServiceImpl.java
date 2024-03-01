@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface IeventFileServiceImpl {
     eventFile addFile(MultipartFile file, Long id);
-    void removeFile(Long f, Long id);
+    void removeFile(Long f);
     List<eventFile> findAll();
     List<eventFile> GeteventFiles(Long id);
 }

@@ -38,6 +38,7 @@ public interface IeventServiceImpl {
     Integer countAllConfirmedEvents();
     Integer countEventParticipations(Long idEvent);
     Integer countEventConfirmed(Long idEvent);
+    String getUserClub(String username);
 
 
 

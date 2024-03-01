@@ -85,7 +85,7 @@ public class eventServiceController {
         return eventservice.getClubs();
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     @GetMapping("/showallEvents")
     public ResponseEntity<?> showAllEvents() {
         return ResponseEntity.ok(eventservice.showAllEvent());
@@ -162,12 +162,9 @@ public class eventServiceController {
 
         String jwt = jwtUtils.parseJwt(request);
         if (jwt != null) {
-            logger.info("Eventjwt: {}", jwt);
             String username = jwtUtils.getUserNameFromJwtToken(jwt);
-            Long idUser = eventservice.getUser(eventservice.showEventUser(username), idEvent);
-            logger.info("EventUdetails: {}", username);
-            if (idUser == null) {
-                logger.info("usereventsCheck: {}", idUser);
+            Long idUser = eventservice.showEventUser(username);
+            if (eventservice.getUser(idUser, idEvent) == null) {
                 eventservice.userEventParticipate(eventservice.showEventUser(username), idEvent);
                 return ResponseEntity.ok("user participated!");
             }
@@ -175,6 +172,13 @@ public class eventServiceController {
         return ResponseEntity
                 .badRequest()
                 .body("Error: Bad request Or Already Participated");
+    }
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    @GetMapping(value="/getUserClub",produces="text/plain")
+    public String getUserClub(HttpServletRequest request) {
+        String jwt = jwtUtils.parseJwt(request);
+        String username = jwtUtils.getUserNameFromJwtToken(jwt);
+        return eventservice.getUserClub(username);
     }
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/addUserEventa")
@@ -192,13 +196,13 @@ public class eventServiceController {
     }
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     @PostMapping(path = "/addFile/{id}")
-    public eventFile addFile(@PathVariable("id") long id, @RequestParam("file") MultipartFile file) throws IOException {
+    public eventFile addFile(@PathVariable("id") long id, @RequestParam("file") MultipartFile file){
         return IEFS.addFile(file, id);
     }
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
-    @DeleteMapping("/{id}/deleteFile/{File}")
-    public void deleteFile(@PathVariable("File") Long File, @PathVariable("id") long id) throws IOException {
-        IEFS.removeFile(File, id);
+    @DeleteMapping("/deleteFile/{File}")
+    public void deleteFile(@PathVariable("File") Long File) {
+        IEFS.removeFile(File);
     }
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     @GetMapping("/getFiles/{id}")

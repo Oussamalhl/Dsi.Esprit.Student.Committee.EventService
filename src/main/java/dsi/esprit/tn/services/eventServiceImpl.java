@@ -179,6 +179,11 @@ public class eventServiceImpl implements IeventServiceImpl {
     public Integer countEventConfirmed(Long idEvent) {
         return eventRepository.countEventConfirmed(idEvent);
     }
+    @Override
+    public String getUserClub(String username) {
+        return eventRepository.getUserClub(username);
+    }
+
 
 
 }

@@ -91,7 +91,9 @@ public interface eventRepository extends JpaRepository<Event, Long> {
             "(select user_id from user_events where user_events.event_id=?1) ",
             nativeQuery = true)
     List<Object[]> getParticipatableEventUsers(Long event_id);
-
+    @Query(value = "select clubs.name from users inner join clubs on users.club_id=clubs.id where users.username=?1",
+            nativeQuery = true)
+    String getUserClub(String username);
 
     @Query(value = "select event_id from user_events group by event_id order by avg(Rating) desc", nativeQuery = true)
     List<Integer[]> bestEventsOfAllTime();
