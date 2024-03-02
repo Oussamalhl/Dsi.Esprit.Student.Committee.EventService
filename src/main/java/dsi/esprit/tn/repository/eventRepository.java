@@ -78,7 +78,12 @@ public interface eventRepository extends JpaRepository<Event, Long> {
     @Transactional
     @Query(value = "update user_events set isConfirmed=true where event_id=?1 and user_id=?2", nativeQuery = true)
     void ConfirmUserEvent(Long event_id, Long user_id);
-
+    @Modifying
+    @Transactional
+    @Query(value = "update user_events set Rating=?1 where event_id=?2 and user_id=?3", nativeQuery = true)
+    void RateUserEvent(Integer Rating, Long event_id, Long user_id);
+    @Query(value = "select Rating from user_events where event_id=?1 and user_id=?2", nativeQuery = true)
+    Integer UserEventRate(Long event_id, Long user_id);
     @Query(value = "SELECT user_id FROM user_events WHERE event_id=?1", nativeQuery = true)
     List<Long> getEventUsers(Long event_id);
 

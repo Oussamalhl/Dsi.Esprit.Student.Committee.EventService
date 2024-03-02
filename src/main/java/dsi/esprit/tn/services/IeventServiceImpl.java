@@ -41,5 +41,7 @@ public interface IeventServiceImpl {
     String getUserClub(String username);
     List<Event> getClubEvents(Long idClub);
     Long getUserClubId(String username);
+    void RateUserEvent(Integer Rating, Long eventId, Long userId);
+    Integer UserEventRate(Long eventId, Long userId);
 
 }

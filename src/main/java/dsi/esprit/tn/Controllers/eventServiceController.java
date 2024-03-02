@@ -187,13 +187,15 @@ public class eventServiceController {
         String username = jwtUtils.getUserNameFromJwtToken(jwt);
         return eventservice.getUserClub(username);
     }
+
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
-    @GetMapping( "/getUserClubId")
+    @GetMapping("/getUserClubId")
     public Long getUserClubId(HttpServletRequest request) {
         String jwt = jwtUtils.parseJwt(request);
         String username = jwtUtils.getUserNameFromJwtToken(jwt);
         return eventservice.getUserClubId(username);
     }
+
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/addUserEventa")
     public ResponseEntity<?> addUserEventAdmin(@RequestParam Long idEvent, @RequestParam String username) {
@@ -254,9 +256,38 @@ public class eventServiceController {
     public List<String> getEventClubs(@RequestParam Long idEvent) {
         return eventservice.getClubs(idEvent);
     }
+
     @GetMapping("/getClubEvents")
     public List<Event> getClubEvents(@RequestParam Long idClub) {
         return eventservice.getClubEvents(idClub);
+    }
+
+    @PostMapping("/rateEvent")
+    public ResponseEntity<String> RateUserEvent(HttpServletRequest request, @RequestParam Long idEvent,@RequestParam Integer Rating) {
+        String jwt = jwtUtils.parseJwt(request);
+        if (jwt != null) {
+            String username = jwtUtils.getUserNameFromJwtToken(jwt);
+            Long idUser = eventservice.showEventUser(username);
+            eventservice.RateUserEvent(Rating, idUser, idEvent);
+            return ResponseEntity.ok("Event Rated!");
+
+        }
+        return ResponseEntity
+                .badRequest()
+                .body("Error: Bad request Or Already Participated");
+
+    }
+
+    @GetMapping("/userEvRate")
+    public Integer UserEventRate(HttpServletRequest request, @RequestParam Long idEvent) {
+        String jwt = jwtUtils.parseJwt(request);
+        if (jwt != null) {
+            String username = jwtUtils.getUserNameFromJwtToken(jwt);
+            Long idUser = eventservice.showEventUser(username);
+            return eventservice.UserEventRate(idUser, idEvent);
+
+        }
+        return 0;
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")

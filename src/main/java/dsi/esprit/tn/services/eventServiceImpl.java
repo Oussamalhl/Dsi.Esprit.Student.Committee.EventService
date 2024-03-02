@@ -27,13 +27,15 @@ public class eventServiceImpl implements IeventServiceImpl {
 //                userId);
 //    }
     @Override
-    public void userEventParticipate(Long user_id,Long event_id) {
-        eventRepository.userEventParticipate(user_id,event_id);
+    public void userEventParticipate(Long user_id, Long event_id) {
+        eventRepository.userEventParticipate(user_id, event_id);
     }
+
     @Override
-    public void eventClubParticipate(Long club_id,Long event_id) {
-        eventRepository.eventClubParticipate(club_id,event_id);
+    public void eventClubParticipate(Long club_id, Long event_id) {
+        eventRepository.eventClubParticipate(club_id, event_id);
     }
+
     @Override
     public void addEvent(Event event) {
         eventRepository.save(event);
@@ -65,25 +67,29 @@ public class eventServiceImpl implements IeventServiceImpl {
     }
 
     @Override
-    public Long getUser(Long idUser,Long idEvent) {
-        return eventRepository.findUserId(idUser,idEvent);
+    public Long getUser(Long idUser, Long idEvent) {
+        return eventRepository.findUserId(idUser, idEvent);
 
     }
+
     @Override
     public Long getClub(String name) {
         return eventRepository.findClubId(name);
 
     }
+
     @Override
     public List<String> getTags() {
         return eventRepository.getEventTags();
 
     }
+
     @Override
     public List<String> getClubs(Long idEvent) {
         return eventRepository.getEventClubs(idEvent);
 
     }
+
     @Override
     public List<Event> getClubEvents(Long idClub) {
         return eventRepository.getClubEvents(idClub);
@@ -95,11 +101,13 @@ public class eventServiceImpl implements IeventServiceImpl {
         return eventRepository.getEventUsers(idEvent);
 
     }
+
     @Override
     public List<Object[]> getEventParticipations(Long idEvent) {
         return eventRepository.getEventParticipations(idEvent);
 
     }
+
     @Override
     public List<Object[]> getParticipatableEventUsers(Long idEvent) {
         return eventRepository.getParticipatableEventUsers(idEvent);
@@ -108,87 +116,114 @@ public class eventServiceImpl implements IeventServiceImpl {
 
     @Override
     public void deleteEventClubs(Long idEvent) {
-         eventRepository.deleteEventClubs(idEvent);
+        eventRepository.deleteEventClubs(idEvent);
 
     }
+
     @Override
     public void deleteUserEvents(Long idEvent) {
         eventRepository.deleteUserEvents(idEvent);
 
     }
+
     @Override
     public String getUsernameDetails(String username) {
         return eventRepository.findUsernameDetails(username);
 
     }
+
     @Override
-    public List<String> getClubs(){
+    public List<String> getClubs() {
         return eventRepository.getClubs();
     }
+
     @Override
-    public Long getUsernameId(String username){
+    public Long getUsernameId(String username) {
         return eventRepository.findUsernameId(username);
     }
+
     @Override
-    public void deleteUserEvent(Long userId){
-         eventRepository.deleteEventUser(userId);
-    }
-    @Override
-    public void confirmUserEvent(Long eventId, Long userId){
-        eventRepository.ConfirmUserEvent(eventId,userId);
+    public void deleteUserEvent(Long userId) {
+        eventRepository.deleteEventUser(userId);
     }
 
     @Override
-    public Integer countEventsByMonth(int month,int year) {
-        return eventRepository.countEventsByMonth(month,year);
+    public void confirmUserEvent(Long eventId, Long userId) {
+        eventRepository.ConfirmUserEvent(eventId, userId);
+    }
+
+    @Override
+    public void RateUserEvent(Integer Rating, Long eventId, Long userId) {
+        eventRepository.RateUserEvent(Rating, eventId, userId);
+    }
+
+    @Override
+    public Integer UserEventRate(Long eventId, Long userId) {
+        return eventRepository.UserEventRate(eventId, userId);
+    }
+
+    @Override
+    public Integer countEventsByMonth(int month, int year) {
+        return eventRepository.countEventsByMonth(month, year);
 
     }
+
     @Override
     public List<Integer[]> countAllEventsByMonth(Integer year) {
         return eventRepository.countAllEventsByMonth(year);
 
     }
+
     @Override
     public List<Object[]> countEventsStatusByYear(Integer year) {
         return eventRepository.countEventStatusByYear(year);
 
     }
+
     @Override
     public List<Object[]> countEventsTypeByYear(Integer year) {
         return eventRepository.countEventTypeByYear(year);
 
     }
+
     @Override
     public List<Object[]> bestEventsOfTheYear(Integer year) {
         return eventRepository.bestEventsOfTheYear(year);
 
     }
+
     @Override
 
     public Integer countAllEvents() {
         return eventRepository.countAllEvents();
     }
+
     @Override
 
     public Integer countAllEventsParticipations() {
         return eventRepository.countAllEventsParticipations();
     }
+
     @Override
     public Integer countAllConfirmedEvents() {
         return eventRepository.countAllConfirmedEvents();
     }
+
     @Override
     public Integer countEventParticipations(Long idEvent) {
         return eventRepository.countEventParticipations(idEvent);
     }
+
     @Override
     public Integer countEventConfirmed(Long idEvent) {
         return eventRepository.countEventConfirmed(idEvent);
     }
+
     @Override
     public String getUserClub(String username) {
         return eventRepository.getUserClub(username);
     }
+
     @Override
     public Long getUserClubId(String username) {
         return eventRepository.getUserClubId(username);
