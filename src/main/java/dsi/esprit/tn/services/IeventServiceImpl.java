@@ -39,7 +39,7 @@ public interface IeventServiceImpl {
     Integer countEventParticipations(Long idEvent);
     Integer countEventConfirmed(Long idEvent);
     String getUserClub(String username);
-
-
+    List<Event> getClubEvents(Long idClub);
+    Long getUserClubId(String username);
 
 }

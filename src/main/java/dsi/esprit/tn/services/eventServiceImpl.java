@@ -85,6 +85,12 @@ public class eventServiceImpl implements IeventServiceImpl {
 
     }
     @Override
+    public List<Event> getClubEvents(Long idClub) {
+        return eventRepository.getClubEvents(idClub);
+
+    }
+
+    @Override
     public List<Long> getUsers(Long idEvent) {
         return eventRepository.getEventUsers(idEvent);
 
@@ -183,7 +189,10 @@ public class eventServiceImpl implements IeventServiceImpl {
     public String getUserClub(String username) {
         return eventRepository.getUserClub(username);
     }
-
+    @Override
+    public Long getUserClubId(String username) {
+        return eventRepository.getUserClubId(username);
+    }
 
 
 }

@@ -50,7 +50,10 @@ public interface eventRepository extends JpaRepository<Event, Long> {
             "inner join club_events on clubs.id=club_events.club_id " +
             "where event_id=?1", nativeQuery = true)
     List<String> getEventClubs(Long event_id);
-
+    @Query(value = "select * from events " +
+            "inner join club_events on events.id=club_events.event_id " +
+            "where club_id=?1", nativeQuery = true)
+    List<Event> getClubEvents(Long club_id);
     @Query(value = "select id from clubs " +
             "inner join club_events on clubs.id=club_events.club_id " +
             "where event_id=?1", nativeQuery = true)
@@ -94,7 +97,9 @@ public interface eventRepository extends JpaRepository<Event, Long> {
     @Query(value = "select clubs.name from users inner join clubs on users.club_id=clubs.id where users.username=?1",
             nativeQuery = true)
     String getUserClub(String username);
-
+    @Query(value = "select clubs.id from users inner join clubs on users.club_id=clubs.id where users.username=?1",
+            nativeQuery = true)
+    Long getUserClubId(String username);
     @Query(value = "select event_id from user_events group by event_id order by avg(Rating) desc", nativeQuery = true)
     List<Integer[]> bestEventsOfAllTime();
 
