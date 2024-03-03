@@ -5,7 +5,7 @@ import dsi.esprit.tn.Models.Event;
 import java.util.List;
 
 public interface IeventServiceImpl {
-    void addEvent(Event event);
+    Event addEvent(Event event);
     void deleteEvent(Long idEvent);
     Event updateEvent(Event Event);
     List<Event> showAllEvent();

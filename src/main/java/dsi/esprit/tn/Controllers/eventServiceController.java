@@ -98,8 +98,8 @@ public class eventServiceController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     @GetMapping("/showallEvents")
-    public ResponseEntity<?> showAllEvents() {
-        return ResponseEntity.ok(eventservice.showAllEvent());
+    public List<Event> showAllEvents() {
+        return eventservice.showAllEvent();
     }
 
     @GetMapping("/showEvent")
@@ -136,35 +136,32 @@ public class eventServiceController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/updateEvent")
-    public ResponseEntity<?> updateEvent(@RequestBody Event event) {
+    public Event updateEvent(@RequestBody Event event) {
 
-        eventservice.updateEvent(event);
-        return ResponseEntity.ok("Eventid: " + event.getId() + " is successfully updated");
+       return eventservice.updateEvent(event);
 
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     @PostMapping("/addEvent")
-    public ResponseEntity<?> addEvent(@RequestBody Event event) {
+    public Event addEvent(@RequestBody Event event) {
 
-        eventservice.addEvent(event);
-        return ResponseEntity.ok(event.toString());
+        return eventservice.addEvent(event);
 
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/addClubEvent")
-    public ResponseEntity<?> addClubEvent(@RequestParam Long idEvent, @RequestBody List<String> clubs) {
+    public void addClubEvent(@RequestParam Long idEvent, @RequestBody List<String> clubs) {
 
         clubs.forEach(e ->
                 eventservice.eventClubParticipate(eventservice.getClub(e), idEvent)
         );
-        return ResponseEntity.ok("Club(s) participated!");
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     @PostMapping("/addUserEvent")
-    public ResponseEntity<?> addUserEvent(HttpServletRequest request, @RequestParam Long idEvent) {
+    public void addUserEvent(HttpServletRequest request, @RequestParam Long idEvent) {
 
         String jwt = jwtUtils.parseJwt(request);
         if (jwt != null) {
@@ -172,12 +169,9 @@ public class eventServiceController {
             Long idUser = eventservice.showEventUser(username);
             if (eventservice.getUser(idUser, idEvent) == null) {
                 eventservice.userEventParticipate(eventservice.showEventUser(username), idEvent);
-                return ResponseEntity.ok("user participated!");
             }
         }
-        return ResponseEntity
-                .badRequest()
-                .body("Error: Bad request Or Already Participated");
+
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
@@ -198,17 +192,13 @@ public class eventServiceController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/addUserEventa")
-    public ResponseEntity<?> addUserEventAdmin(@RequestParam Long idEvent, @RequestParam String username) {
+    public void addUserEventAdmin(@RequestParam Long idEvent, @RequestParam String username) {
 
         Long idUser = eventservice.getUser(eventservice.showEventUser(username), idEvent);
         if (idUser == null) {
             eventservice.userEventParticipate(eventservice.showEventUser(username), idEvent);
-            return ResponseEntity.ok("user participated!");
         }
 
-        return ResponseEntity
-                .badRequest()
-                .body("Error: Bad request Or Already Participated");
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
@@ -268,7 +258,9 @@ public class eventServiceController {
         if (jwt != null) {
             String username = jwtUtils.getUserNameFromJwtToken(jwt);
             Long idUser = eventservice.showEventUser(username);
-            eventservice.RateUserEvent(Rating, idUser, idEvent);
+            logger.info("userId:{}",idUser);
+            logger.info("eventId:{}",idEvent);
+            eventservice.RateUserEvent(Rating,idEvent, idUser);
             return ResponseEntity.ok("Event Rated!");
 
         }
@@ -284,7 +276,7 @@ public class eventServiceController {
         if (jwt != null) {
             String username = jwtUtils.getUserNameFromJwtToken(jwt);
             Long idUser = eventservice.showEventUser(username);
-            return eventservice.UserEventRate(idUser, idEvent);
+            return eventservice.UserEventRate(idEvent,idUser);
 
         }
         return 0;
