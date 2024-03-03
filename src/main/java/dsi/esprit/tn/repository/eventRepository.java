@@ -68,11 +68,11 @@ public interface eventRepository extends JpaRepository<Event, Long> {
     @Transactional
     @Query(value = "DELETE FROM user_events WHERE event_id=?1", nativeQuery = true)
     void deleteUserEvents(Long event_id);
-
     @Modifying
     @Transactional
-    @Query(value = "DELETE FROM user_events WHERE user_id=?1", nativeQuery = true)
-    void deleteEventUser(Long user_id);
+    @Query(value = "DELETE FROM user_events WHERE event_id=?1 AND user_id=?2", nativeQuery = true)
+    void deleteEventUser(Long event_id,Long user_id);
+
 
     @Modifying
     @Transactional
@@ -84,6 +84,8 @@ public interface eventRepository extends JpaRepository<Event, Long> {
     void RateUserEvent(Integer Rating, Long event_id, Long user_id);
     @Query(value = "select Rating from user_events where event_id=?1 and user_id=?2", nativeQuery = true)
     Integer UserEventRate(Long event_id, Long user_id);
+    @Query(value = "select isConfirmed from user_events where event_id=?1 and user_id=?2", nativeQuery = true)
+    Boolean UserEventConfirmation(Long event_id, Long user_id);
     @Query(value = "SELECT user_id FROM user_events WHERE event_id=?1", nativeQuery = true)
     List<Long> getEventUsers(Long event_id);
 

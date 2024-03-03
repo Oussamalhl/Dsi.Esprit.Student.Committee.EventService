@@ -143,8 +143,8 @@ public class eventServiceImpl implements IeventServiceImpl {
     }
 
     @Override
-    public void deleteUserEvent(Long userId) {
-        eventRepository.deleteEventUser(userId);
+    public void deleteUserEvent(Long idEvent, Long idUser) {
+        eventRepository.deleteEventUser(idEvent, idUser);
     }
 
     @Override
@@ -161,7 +161,10 @@ public class eventServiceImpl implements IeventServiceImpl {
     public Integer UserEventRate(Long eventId, Long userId) {
         return eventRepository.UserEventRate(eventId, userId);
     }
-
+    @Override
+    public Boolean UserEventConfirmation(Long eventId, Long userId){
+        return eventRepository.UserEventConfirmation(eventId, userId);
+    }
     @Override
     public Integer countEventsByMonth(int month, int year) {
         return eventRepository.countEventsByMonth(month, year);

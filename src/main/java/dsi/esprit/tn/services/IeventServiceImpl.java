@@ -25,7 +25,7 @@ public interface IeventServiceImpl {
     String getUsernameDetails(String username);
     List<String> getClubs();
     Long getUsernameId(String username);
-    void deleteUserEvent(Long userId);
+    void deleteUserEvent(Long idEvent, Long idUser);
     void confirmUserEvent(Long eventId, Long userId);
 
     List<Object[]> countEventsTypeByYear(Integer year);
@@ -43,5 +43,5 @@ public interface IeventServiceImpl {
     Long getUserClubId(String username);
     void RateUserEvent(Integer Rating, Long eventId, Long userId);
     Integer UserEventRate(Long eventId, Long userId);
-
+    Boolean UserEventConfirmation(Long eventId, Long userId);
 }

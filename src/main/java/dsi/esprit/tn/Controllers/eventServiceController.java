@@ -117,21 +117,31 @@ public class eventServiceController {
         return ResponseEntity.ok("Event Id:" + idEvent + " is successfully deleted");
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     @DeleteMapping("/deleteUserEvent")
-    public ResponseEntity<?> deleteUserEvent(@RequestParam String username) {
-        eventservice.deleteUserEvent(eventservice.getUsernameId(username));
-        return ResponseEntity.ok(username + " is no longer participated");
+    public void deleteUserEvent(HttpServletRequest request, @RequestParam Long idEvent) {
+        String jwt = jwtUtils.parseJwt(request);
+        if (jwt != null) {
+            String username = jwtUtils.getUserNameFromJwtToken(jwt);
+            Long idUser = eventservice.showEventUser(username);
+             eventservice.deleteUserEvent(idEvent,idUser);
+        }
+
+    }
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DeleteMapping("/deleteUserEventa")
+    public void deleteUserEventAdmin(@RequestParam Long eventId, @RequestParam String username) {
+
+        eventservice.deleteUserEvent(eventId,eventservice.getUsernameId(username));
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/deleteUserEventm")
-    public ResponseEntity<?> deleteUserEventMail(@RequestParam Long eventId, @RequestParam String username) throws Exception {
+    public void deleteUserEventMail(@RequestParam Long eventId, @RequestParam String username) throws Exception {
         List<String> user = Arrays.asList(eventservice.getUsernameDetails(username).split(",", -1));
 
-        eventservice.deleteUserEvent(eventservice.getUsernameId(username));
+        eventservice.deleteUserEvent(eventId,eventservice.getUsernameId(username));
         IemailS.CancelParticipation(user, eventservice.showEvent(eventId));
-        return ResponseEntity.ok(username + "no longer participated and notified by Mail");
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -171,7 +181,6 @@ public class eventServiceController {
                 eventservice.userEventParticipate(eventservice.showEventUser(username), idEvent);
             }
         }
-
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
@@ -281,7 +290,17 @@ public class eventServiceController {
         }
         return 0;
     }
+    @GetMapping("/userEvConf")
+    public Boolean UserEventConfirmation(HttpServletRequest request, @RequestParam Long idEvent) {
+        String jwt = jwtUtils.parseJwt(request);
+        if (jwt != null) {
+            String username = jwtUtils.getUserNameFromJwtToken(jwt);
+            Long idUser = eventservice.showEventUser(username);
+            return eventservice.UserEventConfirmation(idEvent,idUser);
 
+        }
+        return false;
+    }
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/generateParticipantBadge/{id}/{user}")
     public void generateParticipantBadge(@PathVariable("id") Long idEvent, @PathVariable("user") String username) throws Exception {
