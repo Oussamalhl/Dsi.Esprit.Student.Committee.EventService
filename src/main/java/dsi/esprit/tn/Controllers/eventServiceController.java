@@ -110,7 +110,7 @@ public class eventServiceController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/deleteEvent")
     public ResponseEntity<?> deleteEvent(@Valid @RequestParam Long idEvent) {
-        logger.info("user_events: {}", eventservice.getUsers(idEvent));
+        //logger.info("user_events: {}", eventservice.getUsers(idEvent));
         eventservice.deleteUserEvents(idEvent);
         eventservice.deleteEventClubs(idEvent);
         eventservice.deleteEvent(idEvent);
@@ -267,8 +267,8 @@ public class eventServiceController {
         if (jwt != null) {
             String username = jwtUtils.getUserNameFromJwtToken(jwt);
             Long idUser = eventservice.showEventUser(username);
-            logger.info("userId:{}",idUser);
-            logger.info("eventId:{}",idEvent);
+            //logger.info("userId:{}",idUser);
+            //logger.info("eventId:{}",idEvent);
             eventservice.RateUserEvent(Rating,idEvent, idUser);
             return ResponseEntity.ok("Event Rated!");
 
@@ -294,6 +294,7 @@ public class eventServiceController {
     public Boolean UserEventConfirmation(HttpServletRequest request, @RequestParam Long idEvent) {
         String jwt = jwtUtils.parseJwt(request);
         if (jwt != null) {
+
             String username = jwtUtils.getUserNameFromJwtToken(jwt);
             Long idUser = eventservice.showEventUser(username);
             return eventservice.UserEventConfirmation(idEvent,idUser);

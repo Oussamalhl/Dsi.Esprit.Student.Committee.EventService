@@ -46,12 +46,12 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                 if (details.get(2).contains("ROLE_MODERATOR"))
                     authorities.add(new SimpleGrantedAuthority("ROLE_MODERATOR"));
 
-                logger.info("jwt Token subject: {}", details.get(2));
-                logger.info("User authorities: {}", authorities);
+//                logger.info("jwt Token subject: {}", details.get(2));
+//                logger.info("User authorities: {}", authorities);
 
                 UserDetails userDetails =
                         new User(details.get(0), details.get(1), authorities);
-                logger.info("User Details: {}", userDetails);
+                //logger.info("User Details: {}", userDetails);
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(
                                 userDetails,
