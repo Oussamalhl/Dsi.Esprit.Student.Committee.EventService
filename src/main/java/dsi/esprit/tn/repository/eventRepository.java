@@ -116,6 +116,10 @@ public interface eventRepository extends JpaRepository<Event, Long> {
             "order by avg(user_events.Rating) desc",
             nativeQuery = true)
     List<Object[]> bestEventsOfTheYear(Integer year);
+    @Query(value = "select avg(user_events.Rating) from user_events " +
+            "where user_events.event_id=?1",
+            nativeQuery = true)
+    Integer eventAverageRating(Long idEvent);
     @Query(value = "SELECT COUNT(*) FROM events", nativeQuery = true)
     Integer countAllEvents();
     @Query(value = "SELECT COUNT(*) FROM user_events", nativeQuery = true)
@@ -131,7 +135,8 @@ public interface eventRepository extends JpaRepository<Event, Long> {
 //    List<Event> selectReclamationsByDate(@Param("startDate") Date startDate,@Param("endDate") Date endDate);
     @Query(value = "SELECT COUNT(*) FROM events WHERE MONTH(eventDateEnd)=? AND YEAR(eventDateEnd)=?", nativeQuery = true)
     Integer countEventsByMonth(@Param("month") int month, @Param("year") int year);
-
+    @Query(value = "SELECT * FROM events WHERE MONTH(eventDateEnd)=?1 AND YEAR(eventDateEnd)=?2", nativeQuery = true)
+    List<Event> upcomingEvents(@Param("month") int month, @Param("year") int year);
     @Query(value = "SELECT MONTH(eventDateEnd),COUNT(*) FROM events WHERE YEAR(eventDateEnd)=?1 GROUP BY MONTH(eventDateEnd)", nativeQuery = true)
     List<Integer[]> countAllEventsByMonth(Integer year);
 

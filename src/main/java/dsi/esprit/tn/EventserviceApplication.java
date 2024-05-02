@@ -14,8 +14,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaRepositories(basePackages = {"dsi.esprit.tn.repository"})
 @ComponentScan(basePackages = { "dsi.esprit.tn.*"})
 @EntityScan("dsi.esprit.tn.Models")
-@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class })public class EventserviceApplication {
-
+@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class })
+public class EventserviceApplication {
     public static void main(String[] args) {
         SpringApplication.run(EventserviceApplication.class, args);
     }

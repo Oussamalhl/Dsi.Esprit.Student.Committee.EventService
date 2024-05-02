@@ -168,9 +168,11 @@ public class eventServiceImpl implements IeventServiceImpl {
     @Override
     public Integer countEventsByMonth(int month, int year) {
         return eventRepository.countEventsByMonth(month, year);
-
     }
-
+    @Override
+    public List<Event> upcomingEvents(int month, int year) {
+        return eventRepository.upcomingEvents(month, year);
+    }
     @Override
     public List<Integer[]> countAllEventsByMonth(Integer year) {
         return eventRepository.countAllEventsByMonth(year);
@@ -193,6 +195,10 @@ public class eventServiceImpl implements IeventServiceImpl {
     public List<Object[]> bestEventsOfTheYear(Integer year) {
         return eventRepository.bestEventsOfTheYear(year);
 
+    }
+    @Override
+    public Integer eventAverageRating(Long idEvent) {
+        return eventRepository.eventAverageRating(idEvent);
     }
 
     @Override

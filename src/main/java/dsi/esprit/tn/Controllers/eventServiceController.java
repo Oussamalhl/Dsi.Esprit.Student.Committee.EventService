@@ -18,7 +18,9 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials = "true")
@@ -322,7 +324,19 @@ public class eventServiceController {
         //sdformat.parse(startDate);
         return eventservice.countEventsByMonth(month, year);
     }
-
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    @GetMapping("/upcomingEv")
+    public List<Event> upcomingEvents() {
+        Date date = new Date();
+        logger.info("month: "+date.getMonth()+"year: "+date.getYear());
+        return eventservice.upcomingEvents(date.getMonth()+1, date.getYear()+1900);
+    }
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    @GetMapping("/nextUpcomingEv")
+    public List<Event> nextUpcomingEvents() {
+        Date date = new Date();
+        return eventservice.upcomingEvents(date.getMonth()+2, date.getYear()+1900);
+    }
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/countAllEvByMonth")
     public List<Integer[]> countAllEventsByDate(@RequestParam Integer year) {
@@ -342,11 +356,15 @@ public class eventServiceController {
     public List<Object[]> countEventsTypeByYear(@RequestParam Integer year) {
         return eventservice.countEventsTypeByYear(year);
     }
-
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/bestEvOfYear")
     public List<Object[]> bestEventsOfTheYear(@RequestParam Integer year) {
         return eventservice.bestEventsOfTheYear(year);
+    }
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    @GetMapping("/avgEvRate")
+    public Integer eventAverageRating(@RequestParam Long idEvent) {
+        return eventservice.eventAverageRating(idEvent);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
