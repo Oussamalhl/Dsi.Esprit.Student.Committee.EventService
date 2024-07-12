@@ -33,6 +33,7 @@ public interface IeventServiceImpl {
     List<Integer[]> countAllEventsByMonth(Integer year);
     Integer countEventsByMonth(int month,int year);
     List<Event> upcomingEvents(int month, int year);
+    List<Event> latestEvents(int year);
     List<Object[]> bestEventsOfTheYear(Integer year);
     Integer eventAverageRating(Long idEvent);
     Integer countAllEvents();

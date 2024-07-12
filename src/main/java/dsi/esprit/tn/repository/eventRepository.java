@@ -110,10 +110,10 @@ public interface eventRepository extends JpaRepository<Event, Long> {
     @Query(value = "select event_id from user_events group by event_id order by avg(Rating) desc", nativeQuery = true)
     List<Integer[]> bestEventsOfAllTime();
 
-    @Query(value = "select event_id,avg(user_events.Rating),name from user_events " +
+    @Query(value = "select event_id,avg(user_events.Rating)*count(*)/events.places,name from user_events " +
             "inner join events on user_events.event_id = events.id where year(eventDateEnd)=?1 " +
             "group by event_id " +
-            "order by avg(user_events.Rating) desc",
+            "order by avg(user_events.Rating)*count(*) desc",
             nativeQuery = true)
     List<Object[]> bestEventsOfTheYear(Integer year);
     @Query(value = "select avg(user_events.Rating) from user_events " +
@@ -137,6 +137,8 @@ public interface eventRepository extends JpaRepository<Event, Long> {
     Integer countEventsByMonth(@Param("month") int month, @Param("year") int year);
     @Query(value = "SELECT * FROM events WHERE MONTH(eventDateEnd)=?1 AND YEAR(eventDateEnd)=?2", nativeQuery = true)
     List<Event> upcomingEvents(@Param("month") int month, @Param("year") int year);
+    @Query(value = "SELECT * FROM events WHERE events.status='ENDED' AND YEAR(eventDateEnd)=?1", nativeQuery = true)
+    List<Event> latestEvents(@Param("year") int year);
     @Query(value = "SELECT MONTH(eventDateEnd),COUNT(*) FROM events WHERE YEAR(eventDateEnd)=?1 GROUP BY MONTH(eventDateEnd)", nativeQuery = true)
     List<Integer[]> countAllEventsByMonth(Integer year);
 

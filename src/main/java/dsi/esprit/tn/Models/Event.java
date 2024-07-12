@@ -31,7 +31,7 @@ public class Event implements Serializable {
     @Size(max = 50)
     private String name;
     @NotBlank
-    @Size(max = 600)
+    @Size(max = 1500)
     private String description;
     @Temporal(TemporalType.DATE)
     private Date eventDateStart;
@@ -46,11 +46,11 @@ public class Event implements Serializable {
     @Size(max = 50)
     private String eventMotive;
     @NotBlank
-    @Size(max = 20)
+    @Size(max = 50)
     private String type;
 
     @NotBlank
-    @Size(max = 20)
+    @Size(max = 50)
     private String status;
     private int   places;
 

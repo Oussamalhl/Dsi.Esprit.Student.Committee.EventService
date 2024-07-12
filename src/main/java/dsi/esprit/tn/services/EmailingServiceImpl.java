@@ -13,6 +13,7 @@ import java.util.List;
 import javax.mail.internet.MimeMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -36,10 +37,12 @@ public class EmailingServiceImpl implements IEmailingServiceImpl {
 
     @Autowired
     private JavaMailSender emailSender;
-
+    @Value("${spring.mail.username}")
+    private String serverMail;
     @Autowired
     IQRCodeGeneratorImpl IQRS;
-    static String TMP_UPLOAD_FOLDER ="E:\\Esprit DSI\\dsi.esprit.eventService\\eventservice\\tmp\\";
+   // static String TMP_UPLOAD_FOLDER ="E:\\Esprit DSI\\dsi.esprit.eventService\\eventservice\\tmp\\";
+   static String TMP_UPLOAD_FOLDER ="/eventservice/tmp/event/";
 
 
     public void ParticipationConfirmation(List<String> user, Event e, String pathPDF) throws Exception {
@@ -49,7 +52,7 @@ public class EmailingServiceImpl implements IEmailingServiceImpl {
         DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
         MimeMessage mm = emailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mm, true);
-        mimeMessageHelper.setFrom("mail"+user.get(1));
+        mimeMessageHelper.setFrom(serverMail);
         mimeMessageHelper.setTo(user.get(1));
         mimeMessageHelper.setText("Hello " + user.get(2) + " " + user.get(3) + "," + "\n \n"
                 + "Your participation in the following event has been confirmed: \n" + "Event: " + e.getName()
@@ -70,7 +73,7 @@ public class EmailingServiceImpl implements IEmailingServiceImpl {
     // pdf generation for Participant badge
     public String GenerateBadge(List<String> user, Event e) throws WriterException, IOException, Exception {
 
-        String pathPDF =TMP_UPLOAD_FOLDER+"event\\"+ user.get(1) + user.get(2) + ".pdf";
+        String pathPDF =TMP_UPLOAD_FOLDER+ user.get(1) + user.get(2) + ".pdf";
         String script1 = "   Participant: ".concat(user.get(0)) + "\n\n";
         String script2 = "   Event: " + e.getName();
         String script3 = "PARTICIPANT";
@@ -105,7 +108,7 @@ public class EmailingServiceImpl implements IEmailingServiceImpl {
         canvas.stroke();
 
 
-        Path path = Paths.get(TMP_UPLOAD_FOLDER+"logo-esprit.png");
+        Path path = Paths.get(TMP_UPLOAD_FOLDER+"esprit.jpg");
 
         ImageData data = ImageDataFactory.create(Files.readAllBytes(path));
 
@@ -136,7 +139,7 @@ public class EmailingServiceImpl implements IEmailingServiceImpl {
 
 
     public void DeleteBadgeFiles(List<String> user, Event e) {
-        String pathPDF =TMP_UPLOAD_FOLDER+"event\\"+ user.get(1) + user.get(2) + ".pdf";
+        String pathPDF =TMP_UPLOAD_FOLDER+ user.get(1) + user.get(2) + ".pdf";
         File f = new File(pathPDF);
         try {
             if (f.delete())
@@ -158,7 +161,7 @@ public class EmailingServiceImpl implements IEmailingServiceImpl {
         DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
         MimeMessage mm = emailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mm, true);
-        mimeMessageHelper.setFrom(user.get(1));
+        mimeMessageHelper.setFrom(serverMail);
         mimeMessageHelper.setTo(user.get(1));
         mimeMessageHelper.setText("Hello " + user.get(2) + " " + user.get(3) + "," + "\n \n"
                 + "You are no longer a participant in the following event: \n" + "Event: "
@@ -182,7 +185,7 @@ public class EmailingServiceImpl implements IEmailingServiceImpl {
         DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
         MimeMessage mm = emailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mm, true);
-        mimeMessageHelper.setFrom(user.get(1));
+        mimeMessageHelper.setFrom(serverMail);
         mimeMessageHelper.setTo(user.get(1));
         mimeMessageHelper.setText("Hello " + user.get(2) + " " + user.get(3) + "," + "\n \n"
                 + "Updates/changes have been added to an event you are participating in. Please note the new changes: \n" + "Event: " + e.getName()
@@ -201,7 +204,7 @@ public class EmailingServiceImpl implements IEmailingServiceImpl {
         File f = new File(TMP_UPLOAD_FOLDER+"logo-esprit.png");
         MimeMessage mm = emailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mm, true);
-        mimeMessageHelper.setFrom(user.get(1));
+        mimeMessageHelper.setFrom(serverMail);
         mimeMessageHelper.setTo(user.get(1));
         mimeMessageHelper.setText(body);
         mimeMessageHelper.setSubject(subject);

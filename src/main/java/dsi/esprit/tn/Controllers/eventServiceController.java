@@ -264,7 +264,7 @@ public class eventServiceController {
     }
 
     @PostMapping("/rateEvent")
-    public ResponseEntity<String> RateUserEvent(HttpServletRequest request, @RequestParam Long idEvent,@RequestParam Integer Rating) {
+    public void RateUserEvent(HttpServletRequest request, @RequestParam Long idEvent,@RequestParam Integer Rating) {
         String jwt = jwtUtils.parseJwt(request);
         if (jwt != null) {
             String username = jwtUtils.getUserNameFromJwtToken(jwt);
@@ -272,12 +272,9 @@ public class eventServiceController {
             //logger.info("userId:{}",idUser);
             //logger.info("eventId:{}",idEvent);
             eventservice.RateUserEvent(Rating,idEvent, idUser);
-            return ResponseEntity.ok("Event Rated!");
+            logger.info("Event rated!");
 
         }
-        return ResponseEntity
-                .badRequest()
-                .body("Error: Bad request Or Already Participated");
 
     }
 
@@ -313,7 +310,7 @@ public class eventServiceController {
         eventservice.confirmUserEvent(idEvent, eventservice.getUsernameId(user.get(0)));
         Event e = eventservice.showEvent(idEvent);
         IemailS.ParticipationConfirmation(user, e, IemailS.GenerateBadge(user, e));
-        IemailS.DeleteBadgeFiles(user, e);
+        //IemailS.DeleteBadgeFiles(user, e);
 
     }
 
@@ -330,6 +327,13 @@ public class eventServiceController {
         Date date = new Date();
         logger.info("month: "+date.getMonth()+"year: "+date.getYear());
         return eventservice.upcomingEvents(date.getMonth()+1, date.getYear()+1900);
+    }
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    @GetMapping("/latestEv")
+    public List<Event> latestEvents() {
+        Date date = new Date();
+        logger.info("month: "+date.getMonth()+"year: "+date.getYear());
+        return eventservice.latestEvents(date.getYear()+1900);
     }
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     @GetMapping("/nextUpcomingEv")

@@ -8,13 +8,15 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @EnableFeignClients("dsi.esprit.tn")
 @EnableDiscoveryClient
 @EnableJpaRepositories(basePackages = {"dsi.esprit.tn.repository"})
-@ComponentScan(basePackages = { "dsi.esprit.tn.*"})
+//@ComponentScan(basePackages = { "dsi.esprit.tn.*"})
 @EntityScan("dsi.esprit.tn.Models")
-@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class })
+@EnableScheduling
+@SpringBootApplication
 public class EventserviceApplication {
     public static void main(String[] args) {
         SpringApplication.run(EventserviceApplication.class, args);

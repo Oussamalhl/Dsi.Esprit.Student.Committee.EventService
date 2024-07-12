@@ -174,6 +174,11 @@ public class eventServiceImpl implements IeventServiceImpl {
         return eventRepository.upcomingEvents(month, year);
     }
     @Override
+    public List<Event> latestEvents(int year){
+        return eventRepository.latestEvents(year);
+    }
+
+    @Override
     public List<Integer[]> countAllEventsByMonth(Integer year) {
         return eventRepository.countAllEventsByMonth(year);
 
